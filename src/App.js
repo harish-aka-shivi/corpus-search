@@ -1,6 +1,4 @@
 /* eslint-disable no-loop-func */
-
-
 function TrieNode() {
   this.children = {};
   this.isWordEnd = false;
@@ -11,20 +9,6 @@ function TrieNode() {
 function Trie() {
   this.root = new TrieNode();
 }
-
-// should happen on server,
-// insert in trie root
-Trie.prototype.insert = function insert(word) {
-  let crawled = this.root;
-  word.split('').forEach(letter => {
-    if (!crawled.children[letter]) {
-      crawled.children[letter] = new TrieNode();
-      crawled = crawled.children[letter];
-    }
-  });
-  crawled.isWordEnd = true;
-};
-
 
 // should happen on server,
 // insert in trie root
@@ -42,20 +26,10 @@ Trie.prototype.insertEmail = function insert(word, emailMemoryLocation) {
   crawled.isWordEnd = true;
 };
 
-Trie.prototype.searchWord = function searchWord(word) {
-  let crawled = this.root;
-  word.split('').forEach(letter => {
-    if (!crawled.children[letter]) {
-      return false;
-    }
-    crawled = crawled.children[letter];
-  });
-  return crawled && crawled.isWordEnd;
-};
-
 // This is the desired function which should return the list of associated email.
 Trie.prototype.search = function search(word) {
   let crawled = this.root;
+  // eslint-disable-next-line consistent-return
   word.split('').forEach(letter => {
     if (!crawled.children[letter]) {
       return [];
@@ -85,7 +59,7 @@ const testExpect = (expect, output) => {
 };
 
 // Extended feature tests
-const extendedTriesTest = () => {
+const extendedTrieTest = () => {
   const demoEmails = [
     {
       emailTitle: 'Hello',
@@ -115,27 +89,7 @@ const extendedTriesTest = () => {
 
   const trie = new Trie();
   putEmails(demoEmails, trie);
-  // console.log(trie.search('th').length, trie.search('th'));
   testExpect(trie.search('th').length, 0);
 };
 
-extendedTriesTest();
-
-// simple tests
-const tests = () => {
-  const words = ['hot', 'a', 'not', 'answer', 'any', 'the',
-    'what', 'take', 'there'];
-
-  const trie = new Trie();
-
-  words.forEach(word => {
-    trie.insert(word);
-  });
-
-  testExpect(trie.searchWord('the'), true);
-  testExpect(trie.searchWord('there'), true);
-  testExpect(trie.searchWord(''), false);
-  testExpect(trie.searchWord('done'), false);
-};
-
-tests();
+extendedTrieTest();
